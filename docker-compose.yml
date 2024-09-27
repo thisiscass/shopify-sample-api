@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:alpine 
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: shopify-db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - shopify_network
+    ports:
+      - "5432:5432"
+
+  node-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PORT: 3001
+      HOST: 'http://localhost'
+      DB_USERNAME: postgres
+      DB_PASSWORD: 12345
+      DB_NAME: shopify-db
+      DB_HOST: postgres
+      DB_PORT: 5432
+      SHOPIFY_ACCESS_TOKEN: 
+      DOCKER_ENV: true  
+    depends_on:
+      - postgres
+    networks:
+      - shopify_network
+    ports:
+      - "3001:3001"
+    restart: on-failure
+
+volumes:
+  postgres-data:
+
+networks:
+  shopify_network:
+    driver: bridge

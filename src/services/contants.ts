@@ -1,0 +1,1 @@
+export const NextLinkPattern = /<[^>]+?&page_info=([^>]+?)>; rel="next"/;
