@@ -8,7 +8,7 @@ type ShopifyProduct = {
 
 type ProductResponse = {
     id?: string;
-    platform_id: string; 
+    platform_id: string;
     name: string;
 }
 
@@ -29,10 +29,8 @@ export const getProducts = async (): Promise<ProductResponse | any[]> => {
     return productsResponse;
 }
 
-export const fecthShopifyProducts = async () => {
+export const fetchShopifyProducts = async () => {
     const products = await fetchResource<ShopifyProduct>(Resource.Product, { limit: 50 }, Number.MAX_VALUE);
-
-    console.log(products);
 
     if (products) {
         let productsModel = products.map((product => {

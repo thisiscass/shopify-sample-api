@@ -4,8 +4,8 @@ import { productRouter } from './routes/product.routes';
 import { orderRouter } from './routes/order.routes';
 import sequelize from './database/index';
 import 'dotenv/config';
-import { fecthShopifyOrders } from './services/order.service';
-import { fecthShopifyProducts } from './services/product.service';
+import { fetchShopifyOrders } from './services/order.service';
+import { fetchShopifyProducts } from './services/product.service';
 
 const port = process.env.PORT || 3000;
 
@@ -17,17 +17,25 @@ app.use(express.json());
 app.use('/getProducts', productRouter);
 app.use('/getOrders', orderRouter);
 
+(async () => {
+    try {
+        await sequelize.sync({ logging: false });
+
+        await fetchShopifyProducts(); 
+        await fetchShopifyOrders();  
+
+        console.log('Shopify data successfully fetched.')
+    } catch (error) {
+        console.error("Error during fetching:", error);
+    }
+})();
+
 app.get('/', (req, res) => {
     res.status(200).json({ msg: 'Server is up and running' });
 })
 
 const start = async (): Promise<void> => {
     try {
-        // await sequelize.sync({ logging: false });
-
-        // await fecthShopifyProducts();
-        await fecthShopifyOrders();
-
         app.listen(port, () => {
             console.log(`App listening on port: ${port}`);
         });

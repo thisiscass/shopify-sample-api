@@ -11,8 +11,8 @@ export class Order extends Model {
     @Column(DataType.INTEGER)
     id!: number;
 
-    @Column(DataType.INTEGER)
-    platformId!: number;
+    @Column(DataType.TEXT)
+    platformId!: string;
 
     @HasMany(() => LineItem)
     lineItems!: LineItem[];

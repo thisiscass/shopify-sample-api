@@ -27,6 +27,6 @@ export class LineItem extends Model {
     @BelongsTo(() => Product)
     product?: Product;
 
-    @Column(DataType.INTEGER)
-    platform_id!: number;
+    @Column(DataType.TEXT)
+    platformId!: string;
 }

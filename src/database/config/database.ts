@@ -11,7 +11,8 @@ const config: SequelizeOptions = {
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
   dialect: 'postgres',
-  models: [Product, Order, LineItem]
+  models: [Product, Order, LineItem],
+  logging: false
 };
 
 export { config };
