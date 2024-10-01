@@ -3,10 +3,18 @@ import express from 'express';
 import { productRouter } from './routes/product.routes';
 import { orderRouter } from './routes/order.routes';
 import sequelize from './database/index';
-import 'dotenv/config';
 import { fetchShopifyOrders } from './services/order.service';
 import { fetchShopifyProducts } from './services/product.service';
 import { swaggerApp } from './doc/swagger';
+import 'dotenv/config';
+
+const isDocker = process.env.DOCKER_ENV === 'true';
+
+if (isDocker) {
+  console.log('Running inside Docker with environment variables from Docker.');
+} else {
+  console.log('Running outside Docker, environment variables may be from .env file.');
+}
 
 const port = process.env.PORT || 3000;
 
@@ -30,10 +38,6 @@ app.use('/orders', orderRouter);
         console.error("Error during fetching:", error);
     }
 })();
-
-app.get('/', (req, res) => {
-    res.status(200).json({ msg: 'Server is up and running' });
-})
 
 swaggerApp(app);
 

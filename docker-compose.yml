@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:alpine 
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: mini-rutter-db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - rutter_network
+    ports:
+      - "5432:5432"
+
+  node-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PORT: 3001
+      HOST: 'http://localhost'
+      DB_USERNAME: postgres
+      DB_PASSWORD: 12345
+      DB_NAME: mini-rutter-db
+      DB_HOST: postgres
+      DB_PORT: 5432
+      SHOPIFY_ACCESS_TOKEN: shpua_b1c9a97a8a3a33ee4a1aa0600b160cab
+      DOCKER_ENV: true  
+    depends_on:
+      - postgres
+    networks:
+      - rutter_network
+    ports:
+      - "3001:3001"
+    restart: on-failure
+
+volumes:
+  postgres-data:
+
+networks:
+  rutter_network:
+    driver: bridge
