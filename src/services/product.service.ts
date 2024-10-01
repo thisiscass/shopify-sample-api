@@ -12,7 +12,7 @@ type ProductResponse = {
     name: string;
 }
 
-export const getProducts = async (): Promise<ProductResponse | any[]> => {
+export const getProducts = async (): Promise<ProductResponse[] | any[]> => {
     const products = await Product.findAll();
 
     let productsResponse: ProductResponse[] = [];

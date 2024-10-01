@@ -3,9 +3,24 @@ import { getOrders } from '../services/order.service';
 
 const orderRouter = express.Router();
 
-orderRouter.get('/', async (req, res) => {
+/**
+ * @swagger
+ * /orders/getOrders:
+ *   get:
+ *     summary: Retrieve a list of orders with its list items
+ *     responses:
+ *       200:
+ *         description: A list of orders
+ *       204: 
+ *         description: No results
+ */
+orderRouter.get('/getOrders', async (req, res) => {
 
   const orders = await getOrders();
+  
+  if (orders.length === 0) {
+    res.status(204).send();
+  }
   
   res.status(200).json(orders);
 

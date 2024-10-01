@@ -6,6 +6,7 @@ import sequelize from './database/index';
 import 'dotenv/config';
 import { fetchShopifyOrders } from './services/order.service';
 import { fetchShopifyProducts } from './services/product.service';
+import { swaggerApp } from './doc/swagger';
 
 const port = process.env.PORT || 3000;
 
@@ -14,8 +15,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use('/getProducts', productRouter);
-app.use('/getOrders', orderRouter);
+app.use('/products', productRouter);
+app.use('/orders', orderRouter);
 
 (async () => {
     try {
@@ -33,6 +34,8 @@ app.use('/getOrders', orderRouter);
 app.get('/', (req, res) => {
     res.status(200).json({ msg: 'Server is up and running' });
 })
+
+swaggerApp(app);
 
 const start = async (): Promise<void> => {
     try {
