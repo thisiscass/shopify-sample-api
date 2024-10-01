@@ -3,7 +3,7 @@ import { fetchResource, Resource } from './shopify.service';
 
 type ShopifyProduct = {
     id: number,
-    title: string
+    title: string,
 }
 
 type ProductResponse = {
@@ -20,8 +20,8 @@ export const getProducts = async (): Promise<ProductResponse | any[]> => {
         productsResponse = products.map((product => {
             return {
                 id: product.id.toString(),
+                platform_id: product.platformId.toString(),
                 name: product.name,
-                platform_id: product.platformId,
             }
         }))
     }
@@ -33,12 +33,12 @@ export const fecthShopifyProducts = async () => {
     const products = await fetchResource<ShopifyProduct>(Resource.Product, { limit: 50 }, Number.MAX_VALUE);
 
     console.log(products);
-    
+
     if (products) {
         let productsModel = products.map((product => {
             return {
                 name: product.title,
-                platform_id: product.id,
+                platformId: product.id,
             }
         }))
 

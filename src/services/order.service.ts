@@ -27,7 +27,7 @@ export const getOrders = async (): Promise<OrderResponse | any[]> => {
     let ordersResponse: OrderResponse[] = [];
     if (orders) {
         ordersResponse = orders.map((order => {
-            let line_items = order.lineItems.map(lineItem => { return { product_id: lineItem.productId ? lineItem.product?.platformId : null } })
+            let line_items = order.lineItems.map(lineItem => { return { product_id: lineItem.productId ? lineItem.product?.platformId.toString() : null } })
             return {
                 id: order.id.toString(),
                 line_items: line_items,
@@ -43,14 +43,23 @@ export const fecthShopifyOrders = async () => {
     const ordersCount = await countResource(Resource.Orders, { status: 'any' });
     let limit = 500;
     if (ordersCount < 50) {
-        limit = 0;
+        limit = 1;
     }
 
     const orders = await fetchResource<ShopifyOrder>(Resource.Orders, { limit: limit, status: 'any' }, 500);
 
-    if (orders) {
-        for (const order of orders) {
-            await Order.create({ platformId: order.id, lineItems: order.line_items });
+    const ordersModel = orders.map(order => {
+        return {
+            platformId: order.id,
+            lineItems: order.line_items.map(li => {
+                return {
+                    platformId: li.id,
+                    productId: li.product_id
+                }
+            })
         }
-    }
+    })
+
+    Order.bulkCreate(ordersModel);
+    
 }

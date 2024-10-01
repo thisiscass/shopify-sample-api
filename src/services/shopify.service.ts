@@ -2,41 +2,48 @@ import { getAxiosConnection } from "./axios.service";
 import { NextLinkPattern } from "./contants";
 
 export enum Resource {
-    Orders = 'Orders',
-    Product = 'Product'
+    Orders = 'orders',
+    Product = 'products'
 };
 
-export const fetchResource = async <T>(resource: Resource, queryParams?: any, condition: number = 0): Promise<Array<T>> => {
+interface ApiResponse<T> {
+    [key: string]: T[]; // This allows indexing with string keys
+}
+
+export const fetchResource = async <T>(resource: Resource, queryParams?: any, totalLimit: number = 1): Promise<Array<T>> => {
     let connection = getAxiosConnection();
     let data: T[] = [];
     let url = `${resource}.json`;
     let next = true;
     let params = queryParams;
 
-    if(condition <= 0) {
-        condition = 1;
-    }
-
     do {
         try {
-            const response = await connection.get(url, { params: params });
+            const response = await connection.get<ApiResponse<T>>(url, { params: params });
 
             let headersResponse = response.headers["link"];
             const match = headersResponse.match(NextLinkPattern);
 
             let pageInfo = match ? match[1] : null;
-            data.push(...response.data[resource.toString().toLowerCase()]);
+            data.push(...response.data[resource]);
 
             if (!pageInfo) {
                 break;
             }
 
-            params = params['page_info'] ?? { ...params, page_info: pageInfo };
+            if(params['page_info']) {
+                params = { ...params, page_info: pageInfo };
+            }
+
+            if(params['status']) {
+                const { status, ...newParams } = params;
+                params = newParams;
+            }
         } catch (error) {
             console.error("Error fetching products:", error);
             next = false;
         }
-    } while (data.length === condition);
+    } while (next && data.length <= totalLimit);
 
     return data;
 }

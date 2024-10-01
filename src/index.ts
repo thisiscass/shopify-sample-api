@@ -14,8 +14,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use('/products', productRouter);
-app.use('/orders', orderRouter);
+app.use('/getProducts', productRouter);
+app.use('/getOrders', orderRouter);
 
 app.get('/', (req, res) => {
     res.status(200).json({ msg: 'Server is up and running' });
@@ -23,10 +23,10 @@ app.get('/', (req, res) => {
 
 const start = async (): Promise<void> => {
     try {
-        await sequelize.sync();
+        // await sequelize.sync({ logging: false });
 
-        await fecthShopifyProducts();
-        // await fecthShopifyOrders();
+        // await fecthShopifyProducts();
+        await fecthShopifyOrders();
 
         app.listen(port, () => {
             console.log(`App listening on port: ${port}`);
