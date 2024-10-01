@@ -1,13 +1,13 @@
 import axios from "axios";
+import 'dotenv/config'
 
-export class AxiosServices {
-  private readonly apiVersion = "2022-04";
-  getAxiosConnection() {
+export const getAxiosConnection = () => {
+    const accessToken = process.env.SHOPIFY_ACCESS_TOKEN
     return axios.create({
-      baseURL: `https://rutterinterview.myshopify.com/admin/api/${this.apiVersion}`,
+      baseURL: `https://rutterinterview.myshopify.com/admin/api/2022-04`,
       headers: {
-        "X-Shopify-Access-Token": "shpua_b1c9a97a8a3a33ee4a1aa0600b160cab",
+        'X-Shopify-Access-Token': accessToken,
       },
     });
   }
-}
+

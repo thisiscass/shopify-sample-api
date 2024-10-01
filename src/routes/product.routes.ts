@@ -1,43 +1,44 @@
-import axios from "axios";
 import express from "express";
-import { AxiosServices } from "../services/axios.service";
+import { getProducts } from "../services/product.service";
 
 const productRouter = express.Router();
-let next = true;
 
-productRouter.get("/", async (req, res) => {
-  let products: any[] = [];
-  let connection = new AxiosServices().getAxiosConnection();
-  let url = `/products.json?limit=50`;
-  do {
-    try {
-      const response = await connection.get(url);
+productRouter.get("/getProducts", async (req, res) => {
+ 
+  let products = await getProducts();
 
-      let headersResponse = response.headers["link"];
-      const match = headersResponse.match(
-        /<[^>]+?&page_info=([^>]+?)>; rel="next"/
-      );
-
-      let pageInfo = match ? match[1] : null;
-      products.push(...response.data.products);
-
-      console.log(`URL: ${url} `);
-      console.log(`match: ${match} - Count: ${products.length}`);
-
-      if (!pageInfo) {
-        break;
-      }
-
-      url = `/products.json?limit=50&page_info=${pageInfo}`;
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      next = false;
-    }
-  } while (next);
-
-  console.log(products.length);
-  res.status(200).json(new ProductResponse(products));
+  res.status(200).json(products);
 });
+
+// productRouter.get("/", async (req, res) => {
+//   let products: any[] = [];
+//   let connection = getAxiosConnection();
+//   do {
+//     try {
+//       const response = await connection.get(url);
+
+//       let headersResponse = response.headers["link"];
+//       const match = headersResponse.match(
+//         /<[^>]+?&page_info=([^>]+?)>; rel="next"/
+//       );
+
+//       let pageInfo = match ? match[1] : null;
+//       products.push(...response.data.products);
+
+//       if (!pageInfo) {
+//         break;
+//       }
+
+//       url = `/products.json?limit=50&page_info=${pageInfo}`;
+//     } catch (error) {
+//       console.error("Error fetching products:", error);
+//       next = false;
+//     }
+//   } while (next);
+
+//   console.log(products.length);
+//   res.status(200).json(new ProductResponse(products));
+// });
 
 export { productRouter };
 
