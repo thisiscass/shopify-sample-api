@@ -10,7 +10,7 @@ const swaggerOptions = {
     swaggerDefinition: {
         openapi: "3.0.0",
         info: {
-            title: "Mini Rutter API",
+            title: "Mini-Rutter API",
             version: "1.0.0",
             description: "This API fetches data from Shopify and transforms the data into a simpler format.", 
         },
