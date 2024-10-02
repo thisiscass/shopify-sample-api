@@ -1,60 +1,28 @@
-import axios from "axios";
 import express from "express";
-import { AxiosServices } from "../services/axios.service";
+import { getProducts } from "../services/product.service";
 
 const productRouter = express.Router();
-let next = true;
 
-productRouter.get("/", async (req, res) => {
-  let products: any[] = [];
-  let connection = new AxiosServices().getAxiosConnection();
-  let url = `/products.json?limit=50`;
-  do {
-    try {
-      const response = await connection.get(url);
+/**
+ * @swagger
+ * /products/getProducts:
+ *   get:
+ *     summary: Retrieve a list of products
+ *     responses:
+ *       200:
+ *         description: A list of products
+ *       204: 
+ *         description: No results
+ */
+productRouter.get("/getProducts", async (req, res) => {
+ 
+  let products = await getProducts();
 
-      let headersResponse = response.headers["link"];
-      const match = headersResponse.match(
-        /<[^>]+?&page_info=([^>]+?)>; rel="next"/
-      );
+  if (products.length === 0) {
+    res.status(204).send();
+  }
 
-      let pageInfo = match ? match[1] : null;
-      products.push(...response.data.products);
-
-      console.log(`URL: ${url} `);
-      console.log(`match: ${match} - Count: ${products.length}`);
-
-      if (!pageInfo) {
-        break;
-      }
-
-      url = `/products.json?limit=50&page_info=${pageInfo}`;
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      next = false;
-    }
-  } while (next);
-
-  console.log(products.length);
-  res.status(200).json(new ProductResponse(products));
+  res.status(200).json(products);
 });
 
 export { productRouter };
-
-type Product = {
-  id?: string; // A unique ID for this product
-  platform_id: string; // The Shopify ID of the product - id field
-  name: string; // The Shopify name of the product - title
-};
-
-class ProductResponse {
-  public products?: Product[];
-  constructor(products: any[]) {
-    this.products = products.map((product) => {
-      return {
-        platform_id: product.id,
-        name: product.title,
-      };
-    });
-  }
-}
