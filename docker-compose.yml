@@ -26,7 +26,7 @@ services:
       DB_NAME: mini-rutter-db
       DB_HOST: postgres
       DB_PORT: 5432
-      SHOPIFY_ACCESS_TOKEN: shpua_b1c9a97a8a3a33ee4a1aa0600b160cab
+      SHOPIFY_ACCESS_TOKEN: 
       DOCKER_ENV: true  
     depends_on:
       - postgres
