@@ -1,4 +1,4 @@
-# Mini-Rutter API
+# Shopify Sample API
 
 This API fetches data from Shopify and transforms the data into a simpler format.
 
