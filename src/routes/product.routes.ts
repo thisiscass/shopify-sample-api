@@ -5,7 +5,7 @@ const productRouter = express.Router();
 
 /**
  * @swagger
- * /products/getProducts:
+ * /products/get-products:
  *   get:
  *     summary: Retrieve a list of products
  *     responses:
@@ -14,7 +14,7 @@ const productRouter = express.Router();
  *       204: 
  *         description: No results
  */
-productRouter.get("/getProducts", async (req, res) => {
+productRouter.get("/get-products", async (req, res) => {
  
   let products = await getProducts();
 

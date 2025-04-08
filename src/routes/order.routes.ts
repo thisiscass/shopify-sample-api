@@ -5,7 +5,7 @@ const orderRouter = express.Router();
 
 /**
  * @swagger
- * /orders/getOrders:
+ * /orders/get-orders:
  *   get:
  *     summary: Retrieve a list of orders with its list items
  *     responses:
@@ -14,7 +14,7 @@ const orderRouter = express.Router();
  *       204: 
  *         description: No results
  */
-orderRouter.get('/getOrders', async (req, res) => {
+orderRouter.get('/get-orders', async (req, res) => {
 
   const orders = await getOrders();
   
